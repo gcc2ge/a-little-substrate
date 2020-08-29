@@ -22,7 +22,18 @@
 
 
 ### 单值类型存储某种单一类型的值，如布尔、数值、枚举、结构体等
-* 数值: u8,i8,u32,i32,u64,i64,u128,i128 
+* 数值: u8, i8, u32, i32, u64, i64, u128, i128
+  * 常用方法
+    * https://github.com/paritytech/substrate/blob/master/frame/support/src/storage/mod.rs
+    * 增: MyUnsignedNumber::put(number);
+    * 查: MyUnsignedNumber::get();
+    * 改: MyUnsignedNumber::mutate(|v| v + 1);
+    * 删: MyUnsignedNumber::kill();
+  * 安全操作
+    * https://github.com/rust-num/num-traits/blob/master/src/ops/checked.rs
+    * https://github.com/paritytech/substrate/blob/master/primitives/arithmetic/src/traits.rs
+    * 返回Result类型: checked_add, checked_sub, checked_mul, checked_div
+    * 溢出返回饱和值: saturating_add, saturating_sub, saturating_mul
 ```Rust
 decl_storage! {
     trait Store for Module<T: Trait> as DataTypeModule {
@@ -31,19 +42,8 @@ decl_storage! {
     }
 }
 ```
-  * 常用方法
-    * https://github.com/paritytech/substrate/blob/master/frame/support/src/storage/mod.rs
-    * 增:MyUnsignedNumber::put(number);
-    * 查:MyUnsignedNumber::get();
-    * 改:MyUnsignedNumber::mutate(|v| v + 1);
-    * 删:MyUnsignedNumber::kill();
-  * 安全操作
-    * https://github.com/rust-num/num-traits/blob/master/src/ops/checked.rs
-    * https://github.com/paritytech/substrate/blob/master/primitives/arithmetic/src/traits.rs
-    * 返回Result类型:checked_add, checked_sub, checked_mul, checked_div
-    * 溢出返回饱和值:saturating_add,saturating_sub,saturating_mul
 
-* 大整数: U256,U512
+* 大整数: U256, U512
   * https://github.com/paritytech/parity-common/blob/master/primitive-types/src/lib.rs
 ```Rust
 use sp_core::U256;
@@ -75,15 +75,7 @@ decl_storage! {
 }
 ```
 
-* Percent,Permill,Perbill 类型
-```Rust
-use sr_primitives::Permill;
-decl_storage! {
-    trait Store for Module<T: Trait> as DataTypeModule {
-        MyPermill get(fn my_permill): Permill;
-    }
-}
-```
+* Percent, Permill, Perbill 类型
   * https://github.com/paritytech/substrate/blob/master/primitives/arithmetic/src/per_things.rs
   * 构造
     * Permill::from_percent(value);
@@ -92,8 +84,17 @@ decl_storage! {
   * 计算
     * permill_one.saturating_mul(permill_two);
     * my_permill * 20000 as u32
+```Rust
+use sr_primitives::Permill;
+decl_storage! {
+    trait Store for Module<T: Trait> as DataTypeModule {
+        MyPermill get(fn my_permill): Permill;
+    }
+}
+```
 
 * Moment 时间类型
+  * 获取链上时间: <timestamp::Module<T>>::get();
 ```Rust
 pub trait Trait: system::Trait + timestamp::Trait {}
 decl_storage! {
@@ -102,9 +103,9 @@ decl_storage! {
     }
 }
 ```
-  * 获取链上时间:<timestamp::Module<T>>::get();
 
 * AccountId 账户类型
+  * 获取 AccountId: let sender = ensure_signed(origin)?;
 ```Rust
 decl_storage! {
     trait Store for Module<T: Trait> as DataTypeModule {
@@ -112,7 +113,6 @@ decl_storage! {
     }
 }
 ```
-  * 获取AccountId: let sender = ensure_signed(origin)?;
 
 * struct 类型
 ```Rust
@@ -128,40 +128,48 @@ decl_storage! {
 }
 ```
 
-* enum 类型需要实现 Default 接口
+* enum 类型需要实现手动 Default 接口
 ```Rust
 #[derive(Copy, Clone, Encode, Decode, Eq, PartialEq, Debug)]
 pub enum Weekday {
-	Monday,
-	Tuesday,
-	Wednesday,
-	Other,
+    Monday,
+    Tuesday,
+    Wednesday,
+    Other,
 }
 impl Default for Weekday {
-	fn default() -> Self {
-		Weekday::Monday
-	}
+    fn default() -> Self {
+        Weekday::Monday
+    }
 }
 impl From<u8> for Weekday {
-	fn from(value: u8) -> Self {
-		match value {
-			1 => Weekday::Monday,
-			2 => Weekday::Tuesday,
-			3 => Weekday::Wednesday,
-			_ => Weekday::Other,
-		}
-	}
+    fn from(value: u8) -> Self {
+        match value {
+            1 => Weekday::Monday,
+            2 => Weekday::Tuesday,
+            3 => Weekday::Wednesday,
+            _ => Weekday::Other,
+        }
+    }
 }
 decl_storage! {
-	trait Store for Module<T: Trait> as DataTypeModule {
-		MyEnum get(fn my_enum): Weekday;
-	}
+    trait Store for Module<T: Trait> as DataTypeModule {
+        MyEnum get(fn my_enum): Weekday;
+    }
 }
 ```
 
 
 ###  简单映射类型
 * map 类型用来保存键值对，单值类型都可以用作key或者value
+  * 常用用法
+    * https://github.com/paritytech/substrate/blob/master/frame/support/src/storage/mod.rs
+    * 插入一个元素:MyMap::insert(key, value);
+    * 通过key获取value:MyMap::get(key);
+    * 删除某个key对应的元素:MyMap::remove(key);
+    * 覆盖或者修改某个key对应的元素
+      * MyMap::insert(key, new_value);
+      * MyMap::mutate(key, |old_value| old_value+1);
 ```Rust
 decl_storage! {
     trait Store for Module<T: Trait> as DataTypeModule {
@@ -172,18 +180,16 @@ decl_storage! {
 ```Rust
 hasher: blake2_128_concat, twox_64_concat, identity
 ```
-  * 常用用法
-    * https://github.com/paritytech/substrate/blob/master/frame/support/src/storage/mod.rs
-    * 插入一个元素:MyMap::insert(key, value);
-    * 通过key获取value:MyMap::get(key);
-    * 删除某个key对应的元素:MyMap::remove(key);
-    * 覆盖或者修改某个key对应的元素
-      * MyMap::insert(key, new_value);
-      * MyMap::mutate(key, |old_value| old_value+1);
 
 
 ###  双键映射类型
 * double_map 类型，使用两个key来索引value，用于快􏰁删除key1对应的任意 记录，也可以遍历key1对应的所有记录
+  * 常用用法
+    * https://github.com/paritytech/substrate/blob/master/frame/support/src/storage/mod.rs
+    * 插入一个元素: MyDoubleMap::<T>::insert(key1, key2, value);
+    * 获取某一元素: MyDoubleMap::<T>::get(key1, key2);
+    * 删除某一元素: MyDoubleMap::<T>::remove(key1, key2);
+    * 删除 key1 对应的所有元素: MyDoubleMap::<T>::remove_prefix(key1);
 ```Rust
 decl_storage! {
     trait Store for Module<T: Trait> as DataTypeModule {
@@ -191,12 +197,6 @@ decl_storage! {
     }
 }
 ```
-  * 常用用法
-    * https://github.com/paritytech/substrate/blob/master/frame/support/src/storage/mod.rs
-    * 插入一个元素:MyDoubleMap::<T>::insert(key1, key2, value);
-    * 获取某一元素:MyDoubleMap::<T>::get(key1, key2);
-    * 删除某一元素:MyDoubleMap::<T>::remove(key1, key2);
-    * 删除 key1 对应的所有元素:MyDoubleMap::<T>::remove_prefix(key1);
 
 
 ## 存储的初始化
@@ -206,37 +206,37 @@ decl_storage! {
   * add_extra_genesis { ... }
 ```Rust
 decl_storage! {
-	trait Store for Module<T: Trait> as GenesisConfigModule {
-		Something get(fn something) config(): Option<u32>;
-		SomethingTwo get(fn something_two) build(|config: &GenesisConfig<T>| {
-			Some(config.something_two + 1)
-		}): Option<u32>;
-		SomethingMap get(fn something_map): map hasher(blake2_128_concat) T::AccountId => u32;
-	}
-	add_extra_genesis {
-		config(something_two): u32;
-		config(some_account_value): Vec<(T::AccountId, u32)>;
-		build(|config: &GenesisConfig<T>| {
-			for (who, value) in config.some_account_value.iter() {
-				SomethingMap::<T>::insert(who, value);
-			}
-		})
-	}	
+    trait Store for Module<T: Trait> as GenesisConfigModule {
+        Something get(fn something) config(): Option<u32>;
+        SomethingTwo get(fn something_two) build(|config: &GenesisConfig<T>| {
+            Some(config.something_two + 1)
+        }): Option<u32>;
+        SomethingMap get(fn something_map): map hasher(blake2_128_concat) T::AccountId => u32;
+    }
+    add_extra_genesis {
+        config(something_two): u32;
+        config(some_account_value): Vec<(T::AccountId, u32)>;
+        build(|config: &GenesisConfig<T>| {
+            for (who, value) in config.some_account_value.iter() {
+                SomethingMap::<T>::insert(who, value);
+            }
+        })
+    }    
 }
 ```
 
 
 ## 最佳实践
 * 最小化链上存储
-  * 哈希值
+  * 记录哈希值而不是文件
   * 设置列表容量
 * Verify First, Write Last
 
 
 ##  其它Tips
-* 可以通过pub关键字设置存储单元的可见范围
+* 可以通过 pub 关键字设置存储单元的可见范围
 * 可以手动设置默认值，如 `MyUnsignedNumber get(fn unsigned_number): u8 = 10;`
-* 在frame目录下查找对应的最新用法
+* 在 frame 目录下查找对应的最新用法
 * decl_storage 宏的说明文档
   * https://crates.parity.io/frame_support/macro.decl_storage.html
 

@@ -13,7 +13,8 @@
   * 答：https://substrate.dev/en/tutorials
 
 * 问：Substrate Seminar 在每周几进行？
-  * 答：每周二 14:00UTC，即北京时间每周二 22:00
+  * 答：每周二 14:00UTC，即北京时间每周二 22:00. 
+  * 链接：https://www.crowdcast.io/e/substrate-seminar/
 
 ## Substrate 和 Polkadot 开源代码仓库
 * 问：star 和 watch substrate 仓库
@@ -28,7 +29,7 @@
 * 问：编译有哪些步骤？
   * 答：https://substrate.dev/docs/en/tutorials/create-your-first-substrate-chain/setup
   * 第一步：克隆 Substrate Node Template (version v2.0.0-rc5)
-    * `git clone -b v2.0.0-rc5 --depth 1 https://github.com/substrate-developer-hub/substrate-node-template`
+    * `git clone -b v2.0.0-rc6 --depth 1 https://github.com/substrate-developer-hub/substrate-node-template`
     * ![查看截图](images/3.png)
   * 第二步：初始化 WebAssembly 的编译环境
     * `source ~/.cargo/env`

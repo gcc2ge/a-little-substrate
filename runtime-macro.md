@@ -116,7 +116,7 @@ construct_runtime!(
 ```
 
 
-## `cargo expand` 把宏代码展开，得到 Rust 的标准语法代码
+## 用 `cargo expand` 把宏代码展开，得到 Rust 的标准语法代码
 * https://github.com/dtolnay/cargo-expand
 * https://github.com/zhubaiyuan/substrate-node-template/blob/expand_pallet_template/pallets/template/src/expanded.rs
 
