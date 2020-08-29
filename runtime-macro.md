@@ -10,8 +10,9 @@
 
 ## Runtime 常用的宏
 * `decl_storage` 宏定义 runtime 模块的存储单元。
+  * https://github.com/paritytech/substrate/blob/master/frame/support/procedural/src/lib.rs
+  * https://github.com/substrate-developer-hub/substrate-node-template/blob/master/pallets/template/src/lib.rs
 ```Rust
-// https://github.com/substrate-developer-hub/substrate-node-template/blob/master/pallets/template/src/lib.rs
 pub trait Trait: frame_system::Trait {
 	type Event: From<Event<Self>> + Into<<Self as frame_system::Trait>::Event>;
 }
@@ -23,8 +24,9 @@ decl_storage! {
 ```
 
 * `decl_event` 宏定义事件。runtime 通过触发事件通知用户重要状态的转换。
+  * https://github.com/paritytech/substrate/blob/master/frame/support/src/event.rs
+  * https://github.com/substrate-developer-hub/substrate-node-template/blob/master/pallets/template/src/lib.rs
 ```Rust
-// https://github.com/substrate-developer-hub/substrate-node-template/blob/master/pallets/template/src/lib.rs
 decl_event!(
 	pub enum Event<T> where AccountId = <T as frame_system::Trait>::AccountId {
 		SomethingStored(u32, AccountId),
@@ -36,12 +38,13 @@ Self::deposit_event(RawEvent::SomethingStored(something, who));
 ```
 
 * `decl_error` 宏定义错误信息。
+  * https://github.com/paritytech/substrate/blob/master/frame/support/src/error.rs
+  * https://github.com/substrate-developer-hub/substrate-node-template/blob/master/pallets/template/src/lib.rs
   * 可调用函数里的错误类型
     * 不能给它们添加数据
     * 通过 metadata 暴露给客户端
     * 错误发生时触发 system.ExtrinsicFailed 事件，包含了对应错误的信息
 ```Rust
-// https://github.com/substrate-developer-hub/substrate-node-template/blob/master/pallets/template/src/lib.rs
 decl_error! {
 	pub enum Error for Module<T: Trait> {
 		NoneValue,
@@ -51,8 +54,17 @@ decl_error! {
 
 ```
 * `decl_module` 宏定义可调用函数，每一个外部交易都会触发一个可调用函数，并根据交易体信息也就是函 数参数，更新链上状态。
+  * https://github.com/paritytech/substrate/blob/master/frame/support/src/dispatch.rs
+  * https://github.com/substrate-developer-hub/substrate-node-template/blob/master/pallets/template/src/lib.rs
+  * Runtime 模块里的保留函数
+    * https://github.com/paritytech/substrate/blob/master/frame/support/src/dispatch.rs
+    * `deposit_event` 函数，如果 pallets 用到 Events 的话，必须用这个函数初始化
+    * `on_initialize` 函数，在每个区块的开头执行
+    * `on_runtime_upgrade` 函数，当有 runtime 升级时才会执行，用来迁移数据
+    * `integrity_test` 函数，集成测试
+    * `on_finalize` 函数，在每个区块结束时执行
+    * `offchain_worker` 函数，开头且是链外执行，不占用链上的资源
 ```Rust
-// https://github.com/substrate-developer-hub/substrate-node-template/blob/master/pallets/template/src/lib.rs
 decl_module! {
 	pub struct Module<T: Trait> for enum Call where origin: T::Origin {
 		type Error = Error<T>;
@@ -79,18 +91,11 @@ decl_module! {
 	}
 }
 ```
-  * Runtime 模块里的保留函数
-    * https://github.com/paritytech/substrate/blob/master/frame/support/src/dispatch.rs
-    * `deposit_event` 函数，如果 pallets 用到 Events 的话，必须用这个函数初始化
-    * `on_initialize` 函数，在每个区块的开头执行
-    * `on_runtime_upgrade` 函数，当有 runtime 升级时才会执行，用来迁移数据
-    * `integrity_test` 函数，集成测试
-    * `on_finalize` 函数，在每个区块结束时执行
-    * `offchain_worker` 函数，开头且是链外执行，不占用链上的资源
 
 * `construct_runtime` 宏加载模块
+  * https://github.com/paritytech/substrate/blob/master/frame/support/procedural/src/lib.rs
+  * https://github.com/substrate-developer-hub/substrate-node-template/blob/master/runtime/src/lib.rs
 ```Rust
-// https://github.com/substrate-developer-hub/substrate-node-template/blob/master/runtime/src/lib.rs
 construct_runtime!(
 	pub enum Runtime where
 		Block = Block,
@@ -118,7 +123,7 @@ construct_runtime!(
 
 ## 其它宏
 * `sp_api::decl_runtime_apis` 宏定义 runtime api
-  *  substrate/primitives/sr-api/proc-macro/src/lib.rs 
+  * https://github.com/paritytech/substrate/blob/master/primitives/sr-api/proc-macro/src/lib.rs
 * `runtime_interface` 宏定义在 runtime 里可以调用的 Host 提供的函数
-  *  substrate/primitives/runtime-interface/proc-macro/src/lib.rs 
+  * https://github.com/paritytech/substrate/blob/master/primitives/runtime-interface/proc-macro/src/lib.rs
 
