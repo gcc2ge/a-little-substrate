@@ -3,19 +3,27 @@
   * 答：https://polkadot.js.org/apps
 
 * 问：Polkadot-JS App 和 Polkadot-JS API 的区别是什么？
-  * 答：名字上一看就有不同，一个尾缀是 App,一个尾缀是 API；
-  * Polkadot-JS App 是官方的前端与 Substrate 网络交互，而 Polkadot-JS API 则提供了官方的 JS 库连去 Substrate 网络。
+  * 答：它们的区别有
+    * 名字上一看就有不同，一个尾缀是 App,一个尾缀是 API；
+    * Polkadot-JS App 是官方的前端与 Substrate 网络交互，而 Polkadot-JS API 则提供了官方的 JS 库连去 Substrate 网络。
 
 * 问：你可以在 Polkadot-JS App 内做什么操作?
-  * 答：查看 Substrate 网络 区块信息；
-  * 对 Substrate 网络作出交易 (Extrinsics)；
-  * 有一个 javascript 编辑器，可对 Substrate 网络写出基础 javascript 与之互动；
-  * 可以对一个信息以某个账号作签名
+  * 答：可以做的操作包括
+    * 查看 Substrate 网络区块信息；
+    * 对 Substrate 网络作出交易 (Extrinsics)；
+    * 有一个 javascript 编辑器，可对 Substrate 网络写出基础 javascript 与之互动；
+    * 可以对一个信息以某个账号作签名
 
 * 问：哪些网络是 Polkadot-JS App 里默认有支持的？
-  * 答：Kusama；
-  * Kulupu；
-  * Centrifuge
+  * 答：包括 Live 网络、测试网络和本地开发。其中 Live 网络有
+    * Kusama；
+    * Kulupu；
+    * Centrifuge
+    * Polkadot
+    * Darwinia Crab
+    * Edgeware
+    * Plasm
+    * Subsocial
 
 * 问：如果在 Substrate 端加了自定义类型，我们在 Polkadot-JS App 里需要作什么才能支持连到这个 Substrate 节点？
   * 答：在 Setting 里, Developer tab 里，加自定义的 JSON 对象。
