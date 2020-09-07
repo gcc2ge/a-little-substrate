@@ -26,6 +26,14 @@
   * ![查看截图](images/2.png)
 
 ## 编译 substrate-node-template
+* 问：需要什么准备？
+  * 答：
+    * 有一定区块链基础
+    * 拥有基本的 Rust 代码阅读能力
+    * 有 Unix 环境，比如 MacOS 或者 Linux (如 Ubuntu，Arch)
+    * 基本 JS 知识
+    * `curl https://getsubstrate.io -sSf | bash -s -- --fast`
+
 * 问：编译有哪些步骤？
   * 答：https://substrate.dev/docs/en/tutorials/create-your-first-substrate-chain/setup
   * 第一步：克隆 Substrate Node Template (version v2.0.0-rc5)
